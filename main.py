@@ -1,19 +1,26 @@
 # main.py
 
-from core.listener import Listener
 from core.speaker import Speaker
+from core.actions import open_chrome
+from core.actions import open_firefox
 
-listener = Listener()
+
 speaker = Speaker()
 
-print("Lucy ETAP 2 uruchomiona")
-
-# test startowy
-speaker.speak("Lucy uruchomiona. Słucham.")
+print("Lucy TEST KOMEND")
 
 while True:
-    text = listener.listen()
-    print(f"Ty: {text}")
+    text = input("Wpisz komendę: ")
+    text_lower = text.lower()
 
-    # TEST: Lucy powtarza co usłyszy
-    speaker.speak(f"Powiedziałeś {text}")
+    if "chrome" in text_lower:
+        response = open_chrome()
+        print(response)
+        speaker.speak(response)
+
+    elif "firefox" in text_lower:
+        response = open_firefox()
+        print(response)
+        speaker.speak(response)
+    else:
+        print("Nie znam komendy")

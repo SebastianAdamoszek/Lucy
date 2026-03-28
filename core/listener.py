@@ -8,7 +8,7 @@ import queue
 class Listener:
     def __init__(self):
         print("🔄 Ładowanie modelu Whisper...")
-        self.model = whisper.load_model("tiny")  # lekki model CPU
+        self.model = whisper.load_model("base")  # dokładniejszy model CPU
         print("✅ Whisper gotowy")
 
         self.samplerate = 16000
@@ -36,8 +36,8 @@ class Listener:
                 data = self.q_audio.get()
                 buffer = np.concatenate([buffer, data.flatten()])
 
-                # co ok 1 sekunda analizujemy
-                if len(buffer) > self.samplerate:
+                # analizujemy co ok. 3 sekundy
+                if len(buffer) > self.samplerate * 3:
                     result = self.model.transcribe(
                         buffer,
                         language="pl",
@@ -46,6 +46,10 @@ class Listener:
 
                     text = result.get("text", "").strip()
                     buffer = np.zeros((0,), dtype=np.float32)
+
+                    # odrzucamy losowe śmieci
+                    if len(text) < 3:
+                        continue
 
                     if text:
                         return text
